@@ -13,21 +13,19 @@ const getProductsCategories = products => products.map(({ category }) => categor
 
 const getCategoryQuantity = allCategories => new Set(allCategories).size;
 
-const getTotalPrice = products =>
+const getRegularPrices = products =>
     products.reduce((acc, product) => acc += product.regularPrice, 0);
 
-const getTotalDiscount = (products, currentPromotion) => {
-    let discountValue = 0;
-    products.map(product => {
+const getPromotionPrices = (products, currentPromotion) => {
+    return products.reduce((acc, product) => {
         let promotionValue = 0;
         product.promotions.map(promotion => {
             if (promotion.looks.includes(currentPromotion)) {
                 promotionValue = promotion.price
             }
         })
-        discountValue += promotionValue || product.regularPrice;
-    });
-    return discountValue;
+        return acc += promotionValue || product.regularPrice;
+    }, 0);
 }
 
 const getPromotion = quantity => {
@@ -56,8 +54,8 @@ const getShoppingCart = (ids, allProducts) => {
     const categories = getProductsCategories(shoppingProducts);
     const shoppingCategories = getCategoryQuantity(categories);
     const promotion = getPromotion(shoppingCategories);
-    const totalPrice = round(getTotalPrice(shoppingProducts));
-    const discountValue = round(totalPrice - getTotalDiscount(shoppingProducts, promotion));
+    const totalPrice = round(getRegularPrices(shoppingProducts));
+    const discountValue = round(totalPrice - getPromotionPrices(shoppingProducts, promotion));
     const discountPercentage = formatPercentage(discountValue, totalPrice);
     const products = parseProducts(shoppingProducts);
     return {
@@ -73,7 +71,7 @@ module.exports = {
     getCategoryQuantity,
     getProductsByIds,
     getProductsCategories,
-    // getPromotionPrices,
-    // getRegularPrices,
+    getPromotionPrices,
+    getRegularPrices,
     getShoppingCart
 }
