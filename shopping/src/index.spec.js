@@ -1,11 +1,11 @@
 const { products } = require('../src/data/products');
 const {
-	// getCategoryQuantity,
+	getCategoryQuantity,
 	getProductsByIds,
 	getProductsCategories,
-	// getPromotionPrices,
-	// getRegularPrices,
-	// getShoppingCart,
+	getPromotionPrices,
+	getRegularPrices,
+	getShoppingCart,
 } = require('./index');
 
 const mockResult1 = [
